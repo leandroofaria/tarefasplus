@@ -1,26 +1,22 @@
-import type { Metadata } from "next";
-import "./globals.css";
-import Header from "@/components/header";
+"use client";
 
+import Header from '@/components/header';
+import './globals.css';
+import { SessionProvider } from 'next-auth/react';
 
-export const metadata: Metadata = {
-  title: "Tarefas +",
-  description: "Organize suas tarefas de forma fácil",
-};
-
-export default function RootLayout({
-  children,
-}: Readonly<{
+interface IProps {
   children: React.ReactNode;
-}>) {
+}
+
+export default function RootLayout({ children }: IProps) {
   return (
-    <html lang="en">
-      <>
+    <SessionProvider>
+      <html lang="pt-br">
         <body>
-          <Header/>
+          <Header />
           {children}
         </body>
-      </>
-    </html>
+      </html>
+    </SessionProvider>
   );
 }
