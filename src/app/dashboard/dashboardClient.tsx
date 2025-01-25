@@ -6,21 +6,36 @@ import { Textarea } from "@/components/textarea";
 import { FiShare2 } from "react-icons/fi";
 import { FaTrash } from "react-icons/fa";
 import { ChangeEvent, FormEvent, useState } from "react";
+import { db } from "@/services/firebaseConnection";
+import { addDoc, collection } from "firebase/firestore";
 
 export default function DashboardClient({ session }: { session: any }) {
   const [input, setInput] = useState("");
   const [publicTask, setPublicTask] = useState(false);
 
-  function handleChangePublic (event: ChangeEvent<HTMLInputElement>) {
-    setPublicTask(event.target.checked)
+  function handleChangePublic(event: ChangeEvent<HTMLInputElement>) {
+    setPublicTask(event.target.checked);
   }
 
-  function handleRegisterTask(event: FormEvent) {
-    event.preventDefault()
+  async function handleRegisterTask(event: FormEvent) {
+    event.preventDefault();
 
     if (input === "") return;
 
-    alert("TESTE")
+    try {
+      await addDoc(collection(db, "tarefas"), {
+        tarefa: input,
+        created: new Date(),
+        user: session.user.email, 
+        public: publicTask,
+      });
+
+      setInput("");
+      setPublicTask(false);
+      alert("Tarefa registrada com sucesso!");
+    } catch (erro) {
+      console.log(erro);
+    }
   }
 
   return (
@@ -38,14 +53,16 @@ export default function DashboardClient({ session }: { session: any }) {
               <Textarea
                 placeholder="Digite sua tarefa aqui..."
                 value={input}
-                onChange={ (event:ChangeEvent<HTMLTextAreaElement>) => setInput(event.target.value)} 
+                onChange={(event: ChangeEvent<HTMLTextAreaElement>) =>
+                  setInput(event.target.value)
+                }
               />
               <div className={styles.checkboxArea}>
                 <input
                   type="checkbox"
                   className={styles.checkbox}
                   checked={publicTask}
-                  onChange={handleChangePublic} 
+                  onChange={handleChangePublic}
                 />
                 <label>Deixar tarefa pública?</label>
               </div>
