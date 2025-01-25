@@ -7,7 +7,8 @@ import { FiShare2 } from "react-icons/fi";
 import { FaTrash } from "react-icons/fa";
 import { ChangeEvent, FormEvent, useState, useEffect } from "react";
 import { db } from "@/services/firebaseConnection";
-import { addDoc, collection, query, orderBy, where, onSnapshot } from "firebase/firestore";
+import { addDoc, collection, query, orderBy, where, onSnapshot, doc, deleteDoc } from "firebase/firestore";
+import Link from "next/link";
 
 interface TaskProps {
   id: string;
@@ -75,6 +76,19 @@ export default function DashboardClient({ session }: { session: any }) {
     }
   }
 
+  async function handleShare(id: string) { 
+    await navigator.clipboard.writeText(
+      `${process.env.NEXT_PUBLIC_URL}/task/${id}`
+    );
+
+    alert("URL COPIADA");
+}
+
+  async function handleDeleteTask(id: string) {
+    const docRef = doc(db, "tarefas", id)
+    await deleteDoc(docRef)
+  }
+
   return (
     <div className={styles.container}>
       <Head>
@@ -118,17 +132,24 @@ export default function DashboardClient({ session }: { session: any }) {
             {item.public && (
               <div className={styles.tagContainer}>
               <label className={styles.tag}>Publico</label>
-              <button className={styles.shareButton}>
+              <button className={styles.shareButton} onClick={() => handleShare(item.id)}>
                 <FiShare2 size={22} color="#3183ff" />
               </button>
             </div>
             )}
 
             <div className={styles.taskContent}>
-              <p>{item.tarefa}</p>
+
+              {item.public ? (
+                <Link href={`/task/${item.id}`}>
+                  <p>{item.tarefa}</p>
+                </Link>
+              ) : (
+                <p>{item.tarefa}</p>
+              )}
 
               <button className={styles.trashButton}>
-                <FaTrash size={24} color="#ea3140" />
+                <FaTrash size={24} color="#ea3140" onClick={() => handleDeleteTask(item.id)}/>
               </button>
             </div>
           </article>
