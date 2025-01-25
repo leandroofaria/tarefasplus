@@ -1,0 +1,47 @@
+.container {
+    width: 100%;
+}
+
+.content {
+    background-color: #0f0f0f;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.contentForm {
+    max-width: 1024px;
+    width: 100%;
+    padding: 0px 18px;
+    padding-bottom: 28px;
+    margin-top: 50px;
+}
+
+.title {
+    color: whitesmoke;
+    margin-bottom: 8px;
+}
+
+.checkboxArea label{
+    margin-left: 8px;
+    color: whitesmoke;
+}
+
+.checkbox {
+    width: 14px;
+    height: 14px;
+    margin: 14px 0px;
+
+}
+
+.button {
+    width: 18%;
+    border: 0;
+    border-radius: 4px;
+    color: whitesmoke;
+    background-color: #3183ff;
+    padding: 6px 0;
+    font-size: 18px;
+}
+
