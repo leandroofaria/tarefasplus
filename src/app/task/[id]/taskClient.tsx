@@ -3,13 +3,26 @@ import styles from "./styles.module.css";
 import Head from "next/head";
 import { Textarea } from "@/components/textarea";
 import { useSession } from "next-auth/react";
-import { ChangeEvent, FormEvent, useState } from "react";
-import { doc, getDoc, collection, query, where, addDoc } from "firebase/firestore";
+import { ChangeEvent, FormEvent, use, useState } from "react";
+import { doc, getDoc, getDocs, collection, query, where, addDoc } from "firebase/firestore";
 import { db } from "@/services/firebaseConnection";
 
-export default function TaskClient({ task }: { task: any }) {
+export interface CommentProps {
+    id: string;
+    comment: string;
+    taskId: string;
+    user: string;
+    name: string;
+}
+
+
+
+export default function TaskClient({ task, allComments }: { task: any; allComments: any[] }) {
+
     const { data: session } = useSession();
     const [input, setInput] = useState("");
+    const [comments, setComments] = useState<CommentProps[]>(allComments || [])
+
     async function HandleComment(event: FormEvent) {
         event.preventDefault()
         
@@ -54,6 +67,19 @@ export default function TaskClient({ task }: { task: any }) {
                         Comentar
                     </button>
                 </form>
+            </section>
+
+            <section className={styles.commentsContainer}>
+                <h2>Comentários</h2>
+                {comments.length === 0 && (
+                    <span>Nenhum comentário foi encontrado...</span>
+                )}
+
+                {comments.map((item) => (
+                    <article key={item.id} className={styles.comment}>
+                        <p>{item.comment}</p>
+                    </article>
+                ))}
             </section>
         </div>
     );
