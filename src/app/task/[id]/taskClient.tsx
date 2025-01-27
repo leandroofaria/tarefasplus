@@ -4,8 +4,9 @@ import Head from "next/head";
 import { Textarea } from "@/components/textarea";
 import { useSession } from "next-auth/react";
 import { ChangeEvent, FormEvent, use, useState } from "react";
-import { doc, getDoc, getDocs, collection, query, where, addDoc } from "firebase/firestore";
+import { doc, getDoc, getDocs, collection, query, where, addDoc, deleteDoc } from "firebase/firestore";
 import { db } from "@/services/firebaseConnection";
+import { FaTrash } from 'react-icons/fa'
 
 export interface CommentProps {
     id: string;
@@ -37,12 +38,30 @@ export default function TaskClient({ task, allComments }: { task: any; allCommen
                 taskId: task?.taskId
             })
 
+            const data = {
+                id: docRef.id,
+                comment: input,
+                user: session?.user?.email,
+                name: session?.user?.name,
+                taskId: task?.taskId
+            }
+
+            setComments((oldItens) => [...oldItens, data])
             setInput("")
 
         } catch(erro) {
             console.log(erro)
         }
 
+    }
+
+    async function handleDeleteComment(id: string) {
+        try {
+            const docRef = doc()
+
+        } catch(erro) {
+            alert(erro)
+        }
     }
 
     return (
@@ -77,6 +96,12 @@ export default function TaskClient({ task, allComments }: { task: any; allCommen
 
                 {comments.map((item) => (
                     <article key={item.id} className={styles.comment}>
+                        <div className={styles.headComment}>
+                            <label className={styles.commentsLabel}>{item.name}</label>
+                            {item.user === session?.user?.email && (
+                                <button className={styles.buttonTrash}><FaTrash size={18} color="#EA3140" /></button>
+                            )}
+                        </div>
                         <p>{item.comment}</p>
                     </article>
                 ))}
