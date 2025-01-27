@@ -57,7 +57,12 @@ export default function TaskClient({ task, allComments }: { task: any; allCommen
 
     async function handleDeleteComment(id: string) {
         try {
-            const docRef = doc()
+            const docRef = doc(db, "comentarios", id);
+            await deleteDoc(docRef);
+
+
+            const deleteComment = comments.filter((item)=>item.id !== id)
+            setComments(deleteComment)
 
         } catch(erro) {
             alert(erro)
@@ -99,7 +104,7 @@ export default function TaskClient({ task, allComments }: { task: any; allCommen
                         <div className={styles.headComment}>
                             <label className={styles.commentsLabel}>{item.name}</label>
                             {item.user === session?.user?.email && (
-                                <button className={styles.buttonTrash}><FaTrash size={18} color="#EA3140" /></button>
+                                <button className={styles.buttonTrash} onClick={() => handleDeleteComment(item.id)}><FaTrash size={18} color="#EA3140" /></button>
                             )}
                         </div>
                         <p>{item.comment}</p>
